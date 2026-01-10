@@ -4,6 +4,8 @@ import "./App.css";
 function App() {
   const [file, setFile] = useState(null);
   const [jobDescription, setJobDescription] = useState("");
+  const [template, setTemplate] = useState("classic");
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -11,7 +13,6 @@ function App() {
   const [pdfName, setPdfName] = useState("cover_letter.pdf");
 
   useEffect(() => {
-    // Cleanup blob URL on unmount
     return () => {
       if (pdfUrl) URL.revokeObjectURL(pdfUrl);
     };
@@ -21,6 +22,7 @@ function App() {
     e.preventDefault();
     setError("");
 
+    // reset previous download
     if (pdfUrl) {
       URL.revokeObjectURL(pdfUrl);
       setPdfUrl(null);
@@ -32,9 +34,10 @@ function App() {
       const formData = new FormData();
       formData.append("resume", file);
       formData.append("job_description", jobDescription);
-      formData.append("output", "pdf");
+      formData.append("output", "pdf");          // ✅ back to single PDF
+      formData.append("template", template);     // ✅ "classic" | "minimal"
 
-      const res = await fetch("http://localhost:8000/cover-letter", {
+      const res = await fetch("http://127.0.0.1:8000/cover-letter", {
         method: "POST",
         body: formData,
       });
@@ -53,7 +56,7 @@ function App() {
       const url = URL.createObjectURL(blob);
       setPdfUrl(url);
     } catch (err) {
-      setError(err.message);
+      setError(err?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -98,6 +101,18 @@ function App() {
             </label>
 
             <label className="label">
+              Template
+              <select
+                className="select"
+                value={template}
+                onChange={(e) => setTemplate(e.target.value)}
+              >
+                <option value="classic">Classic</option>
+                <option value="minimal">Minimal</option>
+              </select>
+            </label>
+
+            <label className="label">
               Job description
               <textarea
                 className="textarea"
@@ -113,12 +128,6 @@ function App() {
               <button className="button" disabled={loading || !file}>
                 {loading ? "Generating…" : "Generate PDF"}
               </button>
-
-              {/*{pdfUrl && (
-                <button type="button" className="buttonSecondary" onClick={handleDownload}>
-                  Download
-                </button>
-              )}*/}
             </div>
 
             {error && <div className="error">{error}</div>}
@@ -140,16 +149,13 @@ function App() {
                   <p className="outputLabel">Ready</p>
                   <p className="outputName">{pdfName}</p>
                 </div>
-                <button className="buttonSecondary" onClick={handleDownload}>
+                <button type="button" className="buttonSecondary" onClick={handleDownload}>
                   Download PDF
                 </button>
               </div>
 
-              {/* Minimal preview box (optional). Uncomment if you want inline viewing. */}
+              {/* Optional inline preview */}
               {/* <iframe className="preview" title="PDF Preview" src={pdfUrl} /> */}
-              {/*<div className="hint">
-                Tip: if you want an inline preview, uncomment the iframe in <code>App.jsx</code>.
-              </div>*/}
             </div>
           )}
         </section>
@@ -159,7 +165,7 @@ function App() {
         <span>
           Authors:{" "}
           <a
-            href="https:/https://www.linkedin.com/in/ben-mcmillen-b587b7227//www.linkedin.com/in/ben-mcmillen-b587b7227/"
+            href="https://www.linkedin.com/in/ben-mcmillen-b587b7227/"
             target="_blank"
             rel="noopener noreferrer"
           >
