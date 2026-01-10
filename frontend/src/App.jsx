@@ -159,7 +159,7 @@ function App() {
         <span>
           Authors:{" "}
           <a
-            href="https://www.linkedin.com/in/ben-mcmillen-b587b7227/"
+            href="https:/https://www.linkedin.com/in/ben-mcmillen-b587b7227//www.linkedin.com/in/ben-mcmillen-b587b7227/"
             target="_blank"
             rel="noopener noreferrer"
           >
