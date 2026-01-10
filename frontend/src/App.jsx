@@ -156,7 +156,24 @@ function App() {
       </main>
 
       <footer className="footer">
-        <span>Local: frontend @ 5173 • backend @ 8000</span>
+        <span>
+          Authors:{" "}
+          <a
+            href="https://www.linkedin.com/in/ben-mcmillen-b587b7227/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Ben McMillen
+          </a>
+          {" and "}
+          <a
+            href="https://www.linkedin.com/in/nathansivalingam/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Nathan Sivalingam
+          </a>
+        </span>
       </footer>
     </div>
   );
