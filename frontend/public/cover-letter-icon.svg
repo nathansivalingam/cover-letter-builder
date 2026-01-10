@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Document rectangle -->
+  <rect
+    x="14"
+    y="8"
+    width="36"
+    height="48"
+    rx="6"
+    stroke="#000"
+    stroke-width="3"
+  />
+
+  <!-- Header line -->
+  <path
+    d="M22 18h20"
+    stroke="#000"
+    stroke-width="3"
+    stroke-linecap="round"
+  />
+
+  <!-- Body lines -->
+  <path
+    d="M22 26h20
+       M22 34h20
+       M22 42h14"
+    stroke="#000"
+    stroke-width="3"
+    stroke-linecap="round"
+  />
+</svg>
