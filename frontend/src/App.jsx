@@ -114,11 +114,11 @@ function App() {
                 {loading ? "Generating…" : "Generate PDF"}
               </button>
 
-              {pdfUrl && (
+              {/*{pdfUrl && (
                 <button type="button" className="buttonSecondary" onClick={handleDownload}>
                   Download
                 </button>
-              )}
+              )}*/}
             </div>
 
             {error && <div className="error">{error}</div>}
