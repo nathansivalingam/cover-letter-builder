@@ -121,7 +121,7 @@ def cover_letter_text_to_pdf_bytes(data: Dict[str, Any]) -> bytes:
 
     yy_left = block_top
     for i, ln in enumerate(left_lines):
-        font = FONT_BOLD if i == 0 else FONT_BOLD if (i == 1 and company_name) else FONT_BODY
+        font = FONT_BOLD if i == 0 else FONT_BODY
         size = SIZE_SECTION if i == 0 else SIZE_BODY
         c.setFont(font, size)
         c.setFillColor(colors.black)
@@ -132,18 +132,25 @@ def cover_letter_text_to_pdf_bytes(data: Dict[str, Any]) -> bytes:
     # RIGHT: grouped CONTACT INFO block
     yy_right = block_top
 
+    # Create a smaller "contact block" INSIDE the right column and use it for BOTH
+    # the heading and the rows, so they stay visually grouped.
+    CONTACT_BLOCK_W = right_w * 0.92
+    x_contact = x_right + (right_w - CONTACT_BLOCK_W) / 2
+
+    label_w = CONTACT_BLOCK_W * 0.34
+    value_w = CONTACT_BLOCK_W - label_w
+    label_x = x_contact
+    value_x = x_contact + label_w
+
     heading = "CONTACT INFO"
     c.setFont(FONT_BOLD, SIZE_SECTION)
     c.setFillColor(HEADING_GRAY)
     heading_w = c.stringWidth(heading, FONT_BOLD, SIZE_SECTION)
-    c.drawString(x_right + right_w - heading_w, yy_right, heading)
-    yy_right -= (LEADING + 6)
 
-    # Rows (label/value) constrained inside right_w
-    label_w = right_w * 0.34
-    value_w = right_w - label_w
-    label_x = x_right
-    value_x = x_right + label_w
+    # Centre the heading over the same contact block width
+    heading_x = x_contact #+ (CONTACT_BLOCK_W - heading_w) / 2
+    c.drawString(heading_x, yy_right, heading)
+    yy_right -= (LEADING + 6)
 
     rows: List[Tuple[str, str]] = []
     if applicant_phone:
