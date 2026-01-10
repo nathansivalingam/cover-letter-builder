@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import "./App.css";
 
 function App() {
   const [file, setFile] = useState(null);
@@ -6,15 +7,20 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // store the generated PDF url + filename
   const [pdfUrl, setPdfUrl] = useState(null);
   const [pdfName, setPdfName] = useState("cover_letter.pdf");
+
+  useEffect(() => {
+    // Cleanup blob URL on unmount
+    return () => {
+      if (pdfUrl) URL.revokeObjectURL(pdfUrl);
+    };
+  }, [pdfUrl]);
 
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
 
-    // clear any previous pdf url to avoid leaks
     if (pdfUrl) {
       URL.revokeObjectURL(pdfUrl);
       setPdfUrl(null);
@@ -26,7 +32,7 @@ function App() {
       const formData = new FormData();
       formData.append("resume", file);
       formData.append("job_description", jobDescription);
-      formData.append("output", "pdf"); // backend must support this
+      formData.append("output", "pdf");
 
       const res = await fetch("http://localhost:8000/cover-letter", {
         method: "POST",
@@ -38,7 +44,6 @@ function App() {
         throw new Error(err.detail || "Request failed");
       }
 
-      // Get filename if backend provides it
       const disposition = res.headers.get("content-disposition") || "";
       const match = disposition.match(/filename="?([^"]+)"?/i);
       const filename = match?.[1] || "cover_letter.pdf";
@@ -46,8 +51,6 @@ function App() {
 
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
-
-      // Don’t open automatically — just store it for the download button
       setPdfUrl(url);
     } catch (err) {
       setError(err.message);
@@ -58,7 +61,6 @@ function App() {
 
   function handleDownload() {
     if (!pdfUrl) return;
-
     const a = document.createElement("a");
     a.href = pdfUrl;
     a.download = pdfName;
@@ -68,48 +70,94 @@ function App() {
   }
 
   return (
-    <div style={{ maxWidth: 800, margin: "40px auto", fontFamily: "sans-serif" }}>
-      <h1>Cover Letter Generator</h1>
+    <div className="page">
+      <header className="header">
+        <h1 className="title">Cover Letter Builder</h1>
+        <p className="subtitle">
+          Upload a resume PDF and paste a job description to generate a downloadable cover letter.
+        </p>
+      </header>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <input
-            type="file"
-            accept="application/pdf"
-            required
-            onChange={(e) => setFile(e.target.files?.[0] || null)}
-          />
-        </div>
+      <main className="grid">
+        <section className="card">
+          <h2 className="cardTitle">Inputs</h2>
 
-        <div style={{ marginTop: 12 }}>
-          <textarea
-            placeholder="Paste job description here..."
-            rows={10}
-            style={{ width: "100%" }}
-            required
-            value={jobDescription}
-            onChange={(e) => setJobDescription(e.target.value)}
-          />
-        </div>
+          <form onSubmit={handleSubmit} className="form">
+            <label className="label">
+              Resume (PDF)
+              <div className="fileRow">
+                <input
+                  className="fileInput"
+                  type="file"
+                  accept="application/pdf"
+                  required
+                  onChange={(e) => setFile(e.target.files?.[0] || null)}
+                />
+                {file && <span className="pill">{file.name}</span>}
+              </div>
+            </label>
 
-        <button style={{ marginTop: 12 }} disabled={loading || !file}>
-          {loading ? "Generating..." : "Generate Cover Letter PDF"}
-        </button>
-      </form>
+            <label className="label">
+              Job description
+              <textarea
+                className="textarea"
+                placeholder="Paste the job description here..."
+                value={jobDescription}
+                onChange={(e) => setJobDescription(e.target.value)}
+                rows={10}
+                required
+              />
+            </label>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+            <div className="actions">
+              <button className="button" disabled={loading || !file}>
+                {loading ? "Generating…" : "Generate PDF"}
+              </button>
 
-      {pdfUrl && (
-        <div style={{ marginTop: 16 }}>
-          <p>PDF ready: <strong>{pdfName}</strong></p>
-          <button onClick={handleDownload}>Download PDF</button>
+              {pdfUrl && (
+                <button type="button" className="buttonSecondary" onClick={handleDownload}>
+                  Download
+                </button>
+              )}
+            </div>
 
-          {/* Optional: show an inline preview */}
-          {/* <div style={{ marginTop: 12 }}>
-            <iframe title="pdf-preview" src={pdfUrl} width="100%" height="500" />
-          </div> */}
-        </div>
-      )}
+            {error && <div className="error">{error}</div>}
+          </form>
+        </section>
+
+        <section className="card">
+          <h2 className="cardTitle">Output</h2>
+
+          {!pdfUrl ? (
+            <div className="empty">
+              <p className="emptyTitle">No PDF yet</p>
+              <p className="emptyText">Generate a cover letter to enable the download button.</p>
+            </div>
+          ) : (
+            <div className="output">
+              <div className="outputHeader">
+                <div>
+                  <p className="outputLabel">Ready</p>
+                  <p className="outputName">{pdfName}</p>
+                </div>
+                <button className="buttonSecondary" onClick={handleDownload}>
+                  Download PDF
+                </button>
+              </div>
+
+              {/* Minimal preview box (optional). Uncomment if you want inline viewing. */}
+              {/* <iframe className="preview" title="PDF Preview" src={pdfUrl} /> */}
+              {/*<div className="hint">
+                Tip: if you want an inline preview, uncomment the iframe in <code>App.jsx</code>.
+              </div>*/}
+            </div>
+          )}
+        </section>
+      </main>
+
+      <footer className="footer">
+        <span>Local: frontend @ 5173 • backend @ 8000</span>
+      </footer>
     </div>
   );
 }

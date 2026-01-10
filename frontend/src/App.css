@@ -1,42 +1,225 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+:root {
+  --bg: #f6f7f9;
+  --card: #ffffff;
+  --border: #e3e6eb;
+  --text: #1a1a1a;
+  --muted: #666;
+  --accent: #1a1a1a;
+  --danger: #c62828;
+  --radius: 16px;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: #ffffff;
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+    Helvetica, Arial;
+
+  /* 🔑 THIS is what truly centers everything */
+  display: flex;
+  justify-content: center;
+}
+
+/* Page container */
+.page {
+  width: 100%;
+  max-width: 1100px;        /* ⬅️ keeps everything centred on wide screens */
+  min-height: 100vh;
+  padding: 48px 16px 32px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Header */
+.header {
   text-align: center;
+  margin-bottom: 28px;
+  max-width: 700px;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.title {
+  margin: 0;
+  font-size: clamp(26px, 4vw, 36px);
+  letter-spacing: -0.02em;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.subtitle {
+  margin-top: 10px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* Main grid */
+.grid {
+  width: 100%;
+  max-width: 960px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
   }
-  to {
-    transform: rotate(360deg);
-  }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
+/* Cards */
 .card {
-  padding: 2em;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 22px;
 }
 
-.read-the-docs {
-  color: #888;
+.cardTitle {
+  margin: 0 0 16px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+/* Form */
+.form {
+  display: grid;
+  gap: 16px;
+}
+
+.label {
+  display: grid;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.fileRow {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.fileInput {
+  max-width: 320px;
+}
+
+.pill {
+  background: #f1f3f6;
+  border: 1px solid var(--border);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+/* Textarea */
+.textarea {
+  width: 100%;
+  min-height: 160px;
+  resize: vertical;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  padding: 12px;
+  font-size: 14px;
+  line-height: 1.45;
+  outline: none;
+}
+
+.textarea:focus {
+  border-color: #b5bcc7;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.button,
+.buttonSecondary {
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border);
+}
+
+.button {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.buttonSecondary {
+  background: white;
+  color: var(--text);
+}
+
+.buttonSecondary:hover {
+  background: #f4f6f8;
+}
+
+/* Output */
+.outputHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: #fafbfc;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.outputLabel {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.outputName {
+  margin: 4px 0 0;
+  font-weight: 600;
+}
+
+/* Empty + errors */
+.empty {
+  color: var(--muted);
+}
+
+.error {
+  background: #fdecea;
+  border: 1px solid #f5c2c0;
+  color: var(--danger);
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+/* Footer */
+.footer {
+  margin-top: 28px;
+  font-size: 12px;
+  color: var(--muted);
 }
