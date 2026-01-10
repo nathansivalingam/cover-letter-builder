@@ -244,3 +244,80 @@ body {
   background-position: right 14px center;
 }
 
+.previewWrap {
+  margin-top: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+
+  /* subtle depth so it doesn't look pasted in */
+  box-shadow: 0 1px 0 rgba(0,0,0,0.03);
+}
+
+.preview {
+  width: 100%;
+  height: min(45vh, 420px); /* responsive but capped */
+  border: 0;
+  display: block;
+}
+
+.output {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.previewBar {
+  padding: 10px 12px;
+  font-size: 12px;
+  color: var(--muted-text);
+  border-bottom: 1px solid var(--border);
+  background: rgba(0,0,0,0.02);
+}
+
+.outputHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pdfPreview {
+  height: min(40vh, 380px);
+  overflow-y: auto;
+  overflow-x: hidden;     /* ✅ this now works */
+  padding: 10px;
+  background: #fff;
+}
+
+/* make each rendered page centered + never overflow sideways */
+.pdfPreview .react-pdf__Page {
+  display: flex;
+  justify-content: center;
+}
+
+.pdfPreview canvas {
+  max-width: 100%;
+  height: auto !important;
+  display: block;
+}
+
+.imagePreview {
+  height: min(40vh, 380px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 10px;
+  background: #fff;
+}
+
+.pdfPageImg {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+

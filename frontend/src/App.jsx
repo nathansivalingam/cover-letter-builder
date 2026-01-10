@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
+// ✅ Render PDF pages to IMAGES using pdfjs-dist (no iframe / no react-pdf)
+import * as pdfjsLib from "pdfjs-dist";
+import pdfWorker from "pdfjs-dist/build/pdf.worker.min.mjs?url";
+
+// ✅ Vite-friendly worker setup
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
+
 function App() {
   const [file, setFile] = useState(null);
   const [jobDescription, setJobDescription] = useState("");
@@ -9,8 +16,13 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // Download link
   const [pdfUrl, setPdfUrl] = useState(null);
   const [pdfName, setPdfName] = useState("cover_letter.pdf");
+
+  // Image preview state
+  const [pageImages, setPageImages] = useState([]);
+  const [renderingPreview, setRenderingPreview] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -18,15 +30,51 @@ function App() {
     };
   }, [pdfUrl]);
 
+  async function renderPdfToImages(blob) {
+    setRenderingPreview(true);
+    setPageImages([]);
+
+    try {
+      const data = await blob.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data }).promise;
+
+      const images = [];
+      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+        const page = await pdf.getPage(pageNum);
+
+        // Quality control: 1.4–2.0 is usually good
+        const viewport = page.getViewport({ scale: 1.6 });
+
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = Math.floor(viewport.width);
+        canvas.height = Math.floor(viewport.height);
+
+        await page.render({ canvasContext: ctx, viewport }).promise;
+
+        images.push(canvas.toDataURL("image/png"));
+      }
+
+      setPageImages(images);
+    } catch (e) {
+      console.error(e);
+      setError("Preview render failed (PDF -> images).");
+    } finally {
+      setRenderingPreview(false);
+    }
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
 
-    // reset previous download
+    // reset previous output
     if (pdfUrl) {
       URL.revokeObjectURL(pdfUrl);
       setPdfUrl(null);
     }
+    setPageImages([]);
 
     setLoading(true);
 
@@ -34,8 +82,8 @@ function App() {
       const formData = new FormData();
       formData.append("resume", file);
       formData.append("job_description", jobDescription);
-      formData.append("output", "pdf");          // ✅ back to single PDF
-      formData.append("template", template);     // ✅ "classic" | "minimal"
+      formData.append("output", "pdf");
+      formData.append("template", template);
 
       const res = await fetch("http://127.0.0.1:8000/cover-letter", {
         method: "POST",
@@ -53,8 +101,13 @@ function App() {
       setPdfName(filename);
 
       const blob = await res.blob();
+
+      // Download URL
       const url = URL.createObjectURL(blob);
       setPdfUrl(url);
+
+      // Preview images
+      await renderPdfToImages(blob);
     } catch (err) {
       setError(err?.message || "Something went wrong");
     } finally {
@@ -154,8 +207,27 @@ function App() {
                 </button>
               </div>
 
-              {/* Optional inline preview */}
-              {/* <iframe className="preview" title="PDF Preview" src={pdfUrl} /> */}
+              <div className="previewWrap">
+                <div className="previewBar">Preview</div>
+
+                <div className="imagePreview">
+                  {renderingPreview ? (
+                    <div className="pdfLoading">Rendering preview…</div>
+                  ) : pageImages.length === 0 ? (
+                    <div className="pdfError">Preview not available.</div>
+                  ) : (
+                    pageImages.map((src, i) => (
+                      <img
+                        key={i}
+                        className="pdfPageImg"
+                        src={src}
+                        alt={`PDF page ${i + 1}`}
+                        loading="lazy"
+                      />
+                    ))
+                  )}
+                </div>
+              </div>
             </div>
           )}
         </section>
