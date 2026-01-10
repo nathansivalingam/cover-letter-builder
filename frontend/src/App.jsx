@@ -197,16 +197,6 @@ function App() {
             </div>
           ) : (
             <div className="output">
-              <div className="outputHeader">
-                <div>
-                  <p className="outputLabel">Ready</p>
-                  <p className="outputName">{pdfName}</p>
-                </div>
-                <button type="button" className="buttonSecondary" onClick={handleDownload}>
-                  Download PDF
-                </button>
-              </div>
-
               <div className="previewWrap">
                 <div className="previewBar">Preview</div>
 
@@ -227,6 +217,15 @@ function App() {
                     ))
                   )}
                 </div>
+              </div>
+              <div className="outputHeader">
+                <div>
+                  <p className="outputLabel">Ready</p>
+                  <p className="outputName">{pdfName}</p>
+                </div>
+                <button type="button" className="buttonSecondary" onClick={handleDownload}>
+                  Download PDF
+                </button>
               </div>
             </div>
           )}
