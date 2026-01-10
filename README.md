@@ -1,4 +1,4 @@
-# AI Cover Letter Generator
+# AI Cover Letter Builder
 
 This project is a web-based application that generates tailored cover letters by analysing a user’s resume alongside a specific job description. The goal is to streamline the job application process while ensuring each cover letter remains relevant, professional, and aligned with the role being applied for.
 
