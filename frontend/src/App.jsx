@@ -85,7 +85,7 @@ function App() {
       formData.append("output", "pdf");
       formData.append("template", template);
 
-      const res = await fetch("http://127.0.0.1:8000/cover-letter", {
+      const res = await fetch("https://gobsiausq7.execute-api.ap-southeast-2.amazonaws.com/cover-letter", {
         method: "POST",
         body: formData,
       });
