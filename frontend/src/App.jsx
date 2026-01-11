@@ -124,6 +124,10 @@ function App() {
     a.click();
     a.remove();
   }
+  function Dots() {
+    return <span className="dots" aria-hidden="true" />;
+  }
+
 
   return (
     <div className="page">
@@ -179,7 +183,13 @@ function App() {
 
             <div className="actions">
               <button className="button" disabled={loading || !file}>
-                {loading ? "Generating…" : "Generate PDF"}
+                {loading ? (
+                  <>
+                    Generating <Dots />
+                  </>
+                ) : (
+                  "Generate PDF"
+                )}
               </button>
             </div>
 

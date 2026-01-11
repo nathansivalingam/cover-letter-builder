@@ -29,6 +29,7 @@ Rules:
 - Name MUST be a first name and a last name.
 - Cover letter MUST fit on one page.
 - All text MUST fall within the page margins.
+- Do NOT ever include em-dashes.
 
 """
 
