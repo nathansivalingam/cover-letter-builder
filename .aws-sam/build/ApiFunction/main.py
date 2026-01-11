@@ -12,6 +12,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",  # Vite
         "http://localhost:3000",  # CRA / Next
+        "https://cover-letter-builder-evch.vercel.app/"
     ],
     allow_credentials=True,
     allow_methods=["*"],
